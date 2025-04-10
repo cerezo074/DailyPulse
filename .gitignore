@@ -1,0 +1,56 @@
+captures
+.cxx
+xcuserdata
+
+# Ignore Gradle build output
+.gradle/
+**/build/
+
+# Ignore IntelliJ IDEA project files
+.idea/
+*.iml
+
+# Ignore local configuration files
+local.properties
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore Windows system files
+Thumbs.db
+
+# Ignore log files
+*.log
+
+# Ignore virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# Ignore generated files
+gen/
+out/
+
+# Ignore NDK build folders
+.externalNativeBuild/
+obj/
+
+# Ignore CocoaPods dependencies
+Pods/
+
+# Ignore Xcode project files
+*.xcodeproj/
+*.xcworkspace/
+
+# Ignore package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Ignore Kotlin/Native build folders
+.kotlinc/
+
+# Ignore node modules (if using Node.js)
+node_modules/
