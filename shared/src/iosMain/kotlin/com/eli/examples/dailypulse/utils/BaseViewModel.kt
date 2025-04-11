@@ -1,4 +1,4 @@
-package com.eli.examples.dailypulse
+package com.eli.examples.dailypulse.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

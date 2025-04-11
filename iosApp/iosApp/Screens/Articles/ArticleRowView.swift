@@ -8,6 +8,7 @@
 
 import SwiftUI
 import shared
+import NukeUI
 
 struct ArticleRowView: View {
     
@@ -27,23 +28,26 @@ struct ArticleRowView: View {
     @ViewBuilder
     private var image: some View {
         if let articleImageURL = URL(string: article.imageURL) {
-            AsyncImage(url: articleImageURL) { image in
-                image.resizable()
-                    .aspectRatio(contentMode: .fill)
-            } placeholder: {
-                ZStack {
-                    Rectangle().fill(Color.gray.opacity(0.5))
-                        .frame(height: 100)
+            LazyImage(url: articleImageURL) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
                         .aspectRatio(contentMode: .fill)
-                    Text("Downloading Image...")
+                } else if state.error != nil {
+                    ZStack {
+                        Rectangle().fill(Color.red.opacity(0.8))
+                            .frame(height: 100)
+                            .aspectRatio(contentMode: .fill)
+                        Text("Failed to load Image :(")
+                    }
+                } else {
+                    ZStack {
+                        Rectangle().fill(Color.gray.opacity(0.5))
+                            .frame(height: 100)
+                            .aspectRatio(contentMode: .fill)
+                        Text("Downloading Image...")
+                    }
                 }
-            }
-        } else {
-            ZStack {
-                Rectangle().fill(Color.red.opacity(0.8))
-                    .frame(height: 100)
-                    .aspectRatio(contentMode: .fill)
-                Text("Failed to load Image :(")
             }
         }
     }
@@ -52,7 +56,6 @@ struct ArticleRowView: View {
         VStack(alignment: .leading, spacing: 8) {
             Text(attributedContent)
                 .foregroundColor(.black)
-                .fixedSize(horizontal: false, vertical: true)
             HStack {
                 Spacer()
                 Text(article.date)

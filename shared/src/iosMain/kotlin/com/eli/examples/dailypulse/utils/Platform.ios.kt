@@ -1,4 +1,4 @@
-package com.eli.examples.dailypulse
+package com.eli.examples.dailypulse.utils
 
 import platform.Foundation.NSLog
 import platform.UIKit.UIDevice

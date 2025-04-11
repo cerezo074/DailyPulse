@@ -1,4 +1,4 @@
-package com.eli.examples.dailypulse
+package com.eli.examples.dailypulse.utils
 
 expect class Platform {
     val osName: String

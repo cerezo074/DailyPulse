@@ -30,8 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.eli.examples.dailypulse.articles.Article
-import com.eli.examples.dailypulse.articles.ArticlesViewModel
+import com.eli.examples.dailypulse.articles.presentation.Article
+import com.eli.examples.dailypulse.articles.presentation.ArticlesViewModel
 
 @Composable
 fun ArticlesScreen(

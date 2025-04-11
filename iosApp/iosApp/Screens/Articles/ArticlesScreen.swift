@@ -72,3 +72,9 @@ struct ArticlesScreen: View {
 #Preview {
     ArticlesScreen()
 }
+
+extension Article: Identifiable {
+    public var id: String {
+        "\(title) \(imageURL)"
+    }
+}

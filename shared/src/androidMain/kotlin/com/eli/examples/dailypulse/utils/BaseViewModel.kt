@@ -1,4 +1,4 @@
-package com.eli.examples.dailypulse
+package com.eli.examples.dailypulse.utils
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

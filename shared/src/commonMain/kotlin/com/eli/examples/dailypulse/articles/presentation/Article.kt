@@ -1,4 +1,4 @@
-package com.eli.examples.dailypulse.articles
+package com.eli.examples.dailypulse.articles.presentation
 
 data class Article(
     val title: String,

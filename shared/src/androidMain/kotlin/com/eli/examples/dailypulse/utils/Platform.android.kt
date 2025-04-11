@@ -1,10 +1,9 @@
-package com.eli.examples.dailypulse
+package com.eli.examples.dailypulse.utils
 
 import android.content.res.Resources
 import android.os.Build
 import android.util.Log
 import kotlin.math.round
-
 
 actual class Platform() {
     actual val osName: String
