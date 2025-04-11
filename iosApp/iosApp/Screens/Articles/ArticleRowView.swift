@@ -21,6 +21,7 @@ struct ArticleRowView: View {
     var body: some View {
         VStack {
             image
+                .frame(height: 200)
             informationContainer
         }
     }
@@ -32,22 +33,20 @@ struct ArticleRowView: View {
                 if let image = state.image {
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else if state.error != nil {
-                    ZStack {
-                        Rectangle().fill(Color.red.opacity(0.8))
-                            .frame(height: 100)
-                            .aspectRatio(contentMode: .fill)
-                        Text("Failed to load Image :(")
-                    }
+                        .aspectRatio(contentMode: .fit)
                 } else {
                     ZStack {
                         Rectangle().fill(Color.gray.opacity(0.5))
-                            .frame(height: 100)
                             .aspectRatio(contentMode: .fill)
                         Text("Downloading Image...")
                     }
                 }
+            }
+        } else {
+            ZStack {
+                Rectangle().fill(Color.red.opacity(0.8))
+                    .aspectRatio(contentMode: .fill)
+                Text("Failed to load Image :(")
             }
         }
     }
