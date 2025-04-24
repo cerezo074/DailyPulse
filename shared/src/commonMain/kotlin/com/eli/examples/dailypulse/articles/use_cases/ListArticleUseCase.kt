@@ -3,6 +3,13 @@ package com.eli.examples.dailypulse.articles.use_cases
 import com.eli.examples.dailypulse.articles.presentation.Article
 import com.eli.examples.dailypulse.articles.services.network.ArticleItem
 import com.eli.examples.dailypulse.articles.services.network.ArticlesService
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.daysUntil
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
+import kotlin.math.abs
 
 class ListArticleUseCase(private val service: ArticlesService) {
 
@@ -17,8 +24,23 @@ class ListArticleUseCase(private val service: ArticlesService) {
             Article(
                 item.title,
                 item.desc ?: "Click to find out more",
-                item.date,
+                getDaysAgoText(item.date),
                 item.imageURL ?: "https://i.sstatic.net/areKx.png"
             )
         }
+
+    private fun getDaysAgoText(date: String) : String {
+        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+        val days = today.daysUntil(
+            Instant.parse(date).toLocalDateTime(TimeZone.currentSystemDefault()).date
+        )
+
+        val result = when {
+            abs(days) > 1 -> "${abs(days)} days ago"
+            abs(days) == 1 -> "Yesterday"
+            else -> "Today"
+        }
+
+        return result
+    }
 }

@@ -14,21 +14,19 @@ import com.eli.examples.dailypulse.articles.presentation.ArticlesViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AppScaffold(articlesViewModel: ArticlesViewModel) {
+fun AppScaffold() {
     val navController = rememberNavController()
 
     Scaffold {
         AppNavHost(
-            navController = navController,
-            articlesViewModel
+            navController = navController
         )
     }
 }
 
 @Composable
 fun AppNavHost(
-    navController: NavHostController,
-    articlesViewModel: ArticlesViewModel
+    navController: NavHostController
 ) {
     NavHost(
         navController = navController,
@@ -36,8 +34,7 @@ fun AppNavHost(
     ) {
         composable(Screens.ARTICLES.route) {
             ArticlesScreen(
-                onAboutButtonClick = { navController.navigate(Screens.ABOUT_DEVICE.route) },
-                articlesViewModel = articlesViewModel
+                onAboutButtonClick = { navController.navigate(Screens.ABOUT_DEVICE.route) }
             )
         }
         composable(Screens.ABOUT_DEVICE.route) {
