@@ -17,8 +17,8 @@ class ArticlesViewModelWrapper: ObservableObject {
     
     let articlesViewModel: ArticlesViewModel
     
-    init() {
-        let viewModel = ArticlesViewModel()
+    init(articlesViewModel: ArticlesViewModel? = nil) {
+        let viewModel = articlesViewModel ?? ArticlesInjector().viewModel
         self.articlesState = viewModel.articlesState.value
         self.articlesViewModel = viewModel
     }
