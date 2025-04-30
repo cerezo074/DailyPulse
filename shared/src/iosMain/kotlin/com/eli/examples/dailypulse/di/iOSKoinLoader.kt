@@ -7,7 +7,7 @@ import org.koin.core.context.startKoin
 
 object iOSKoinLoader {
     fun init(){
-        val appModules = sharedKoinModules
+        val appModules = sharedKoinModules + databaseModule
 
         startKoin {
             modules(appModules)
