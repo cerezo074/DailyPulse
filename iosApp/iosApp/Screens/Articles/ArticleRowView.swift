@@ -36,16 +36,16 @@ struct ArticleRowView: View {
                         .aspectRatio(contentMode: .fit)
                 } else {
                     ZStack {
-                        Rectangle().fill(Color.gray.opacity(0.5))
-                            .aspectRatio(contentMode: .fill)
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.5))
                         Text("Downloading Image...")
                     }
                 }
             }
         } else {
             ZStack {
-                Rectangle().fill(Color.red.opacity(0.8))
-                    .aspectRatio(contentMode: .fill)
+                Rectangle()
+                    .fill(Color.red.opacity(0.8))
                 Text("Failed to load Image :(")
             }
         }
