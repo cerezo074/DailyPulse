@@ -10,6 +10,6 @@ data class ArticlesResponse(
     @SerialName("totalResults")
     val totalResults: Int,
     @SerialName("articles")
-    val articles: List<ArticleItem>
+    val articles: List<ArticleRemoteItem>
 )
 

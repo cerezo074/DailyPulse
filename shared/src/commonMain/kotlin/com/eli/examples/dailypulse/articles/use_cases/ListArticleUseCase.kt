@@ -1,8 +1,8 @@
 package com.eli.examples.dailypulse.articles.use_cases
 
 import com.eli.examples.dailypulse.articles.presentation.Article
-import com.eli.examples.dailypulse.articles.services.network.ArticleItem
-import com.eli.examples.dailypulse.articles.services.network.ArticlesService
+import com.eli.examples.dailypulse.articles.services.model.ArticleModel
+import com.eli.examples.dailypulse.articles.services.repository.ArticlesRepository
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -11,15 +11,15 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 import kotlin.math.abs
 
-class ListArticleUseCase(private val service: ArticlesService) {
+class ListArticleUseCase(private val repository: ArticlesRepository) {
 
     suspend fun getArticles(): List<Article> {
-        val articleItems = service.fetchArticles()
+        val articleItems = repository.getArticles()
 
         return resetInvalidAttributes(articleItems)
     }
 
-    private fun resetInvalidAttributes(items: List<ArticleItem>): List<Article> =
+    private fun resetInvalidAttributes(items: List<ArticleModel>): List<Article> =
         items.map { item ->
             Article(
                 item.title,

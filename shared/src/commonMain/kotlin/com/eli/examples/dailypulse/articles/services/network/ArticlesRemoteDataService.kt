@@ -19,7 +19,7 @@ data class ArticlesConfiguration(
     }
 }
 
-class ArticlesService(
+class ArticlesRemoteDataService(
     private val httpClient: HttpClient,
     private val configuration: ArticlesConfiguration = ArticlesConfiguration.DEFAULT_CONFIG
 ) {
@@ -31,7 +31,7 @@ class ArticlesService(
                     "apiKey=${configuration.apiKey}"
         }
 
-    suspend fun fetchArticles(): List<ArticleItem> {
+    suspend fun fetchArticles(): List<ArticleRemoteItem> {
         val response: ArticlesResponse = httpClient.get(allArticlesURL).body()
         return response.articles
     }

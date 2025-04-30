@@ -23,6 +23,10 @@ class ArticlesViewModelWrapper: ObservableObject {
         self.articlesViewModel = viewModel
     }
     
+    deinit {
+        articlesViewModel.clear()
+    }
+    
     func startObserving() async {
         for await articleS in articlesViewModel.articlesState {
             self.articlesState = articleS

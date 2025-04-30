@@ -1,0 +1,17 @@
+CREATE TABLE DBArticleItem (
+    title TEXT NOT NULL,
+    desc TEXT,
+    date TEXT NOT NULL,
+    imageURL TEXT
+);
+
+insertArticle:
+INSERT INTO DBArticleItem(title, desc, date, imageURL)
+VALUES (?,?,?,?);
+
+getAllArticles:
+SELECT DBArticleItem.*
+FROM DBArticleItem;
+
+removeAllArticles:
+DELETE FROM DBArticleItem;

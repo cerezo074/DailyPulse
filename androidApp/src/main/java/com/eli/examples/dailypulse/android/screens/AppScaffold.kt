@@ -1,4 +1,4 @@
-package com.eli.examples.dailypulse.android
+package com.eli.examples.dailypulse.android.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.material3.Scaffold
@@ -7,10 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.eli.examples.dailypulse.android.screens.AboutScreen
-import com.eli.examples.dailypulse.android.screens.ArticlesScreen
-import com.eli.examples.dailypulse.android.screens.Screens
-import com.eli.examples.dailypulse.articles.presentation.ArticlesViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
