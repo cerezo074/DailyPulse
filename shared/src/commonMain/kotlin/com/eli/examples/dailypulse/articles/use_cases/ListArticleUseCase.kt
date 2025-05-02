@@ -13,8 +13,8 @@ import kotlin.math.abs
 
 class ListArticleUseCase(private val repository: ArticlesRepository) {
 
-    suspend fun getArticles(): List<Article> {
-        val articleItems = repository.getArticles()
+    suspend fun getArticles(forceRefresh: Boolean): List<Article> {
+        val articleItems = repository.getArticles(forceRefresh)
 
         return resetInvalidAttributes(articleItems)
     }

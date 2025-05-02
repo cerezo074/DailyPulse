@@ -10,23 +10,40 @@ class ArticlesViewModel(
     private val listArticleUseCase: ListArticleUseCase
 ) : BaseViewModel() {
 
-    private val internalArticlesState: MutableStateFlow<ArticlesState> = MutableStateFlow(
-        ArticlesState(loading = true)
-    )
+    private val internalContentState: MutableStateFlow<ArticlesState> = MutableStateFlow(ArticlesState(loading = true))
+    private val internalIsRefreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val articlesState: StateFlow<ArticlesState>
+    val contentState: StateFlow<ArticlesState>
         get() {
-            return internalArticlesState
+            return internalContentState
+        }
+
+    val isRefreshing: StateFlow<Boolean>
+        get() {
+            return internalIsRefreshing
         }
 
     init {
-        getArticles()
+        scope.launch {
+            val fetchedArticles = listArticleUseCase.getArticles(false)
+            internalContentState.emit(ArticlesState(articles = fetchedArticles, loading = false))
+        }
     }
 
-    private fun getArticles() {
+    fun onRefreshContent() {
         scope.launch {
-            val fetchedArticles = listArticleUseCase.getArticles()
-            internalArticlesState.emit(ArticlesState(articles = fetchedArticles))
+            refreshContent()
         }
+    }
+
+    suspend fun onRefreshContentAsync() {
+        refreshContent()
+    }
+
+    private suspend fun refreshContent() {
+        internalIsRefreshing.emit(true)
+        val fetchedArticles = listArticleUseCase.getArticles(true)
+        internalIsRefreshing.emit(false)
+        internalContentState.emit(ArticlesState(articles = fetchedArticles))
     }
 }

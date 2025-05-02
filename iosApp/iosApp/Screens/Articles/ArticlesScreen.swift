@@ -9,31 +9,6 @@
 import SwiftUI
 import shared
 
-@MainActor
-class ArticlesViewModelWrapper: ObservableObject {
-    
-    @Published
-    private(set) var articlesState: ArticlesState
-    
-    let articlesViewModel: ArticlesViewModel
-    
-    init(articlesViewModel: ArticlesViewModel? = nil) {
-        let viewModel = articlesViewModel ?? ArticlesInjector().viewModel
-        self.articlesState = viewModel.articlesState.value
-        self.articlesViewModel = viewModel
-    }
-    
-    deinit {
-        articlesViewModel.clear()
-    }
-    
-    func startObserving() async {
-        for await articleS in articlesViewModel.articlesState {
-            self.articlesState = articleS
-        }
-    }
-}
-
 struct ArticlesScreen: View {
     
     @StateObject
@@ -45,19 +20,20 @@ struct ArticlesScreen: View {
     
     var body: some View {
         VStack {
-            if viewModel.articlesState.loading {
+            if viewModel.contentState.loading {
                 ProgressView("Loading...")
-            } else if !viewModel.articlesState.articles.isEmpty {
-                makeArticleList(with: viewModel.articlesState.articles)
-            } else if let errorMessage = viewModel.articlesState.error {
+            } else if !viewModel.contentState.articles.isEmpty {
+                makeArticleList(with: viewModel.contentState.articles)
+            } else if let errorMessage = viewModel.contentState.error {
                 Text(errorMessage)
             }
         }.task {
-            await viewModel.startObserving()
+            await viewModel.startObservingChanges()
         }
         .padding(.top, 40)
         .padding(.horizontal, 20)
         .navigationTitle("Articles")
+        .navigationBarTitleDisplayMode(.inline)
     }
     
     private func makeArticleList(with articles: [Article]) -> some View {
@@ -67,17 +43,17 @@ struct ArticlesScreen: View {
                     ArticleRowView(with: article)
                 }
             }
+        }.refreshable {
+            await viewModel.onRefreshContent()
         }
     }
 }
-
-
 
 #Preview {
     ArticlesScreen()
 }
 
-extension Article: Identifiable {
+extension Article: @retroactive Identifiable {
     public var id: String {
         "\(title) \(imageURL)"
     }

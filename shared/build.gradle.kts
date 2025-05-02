@@ -7,9 +7,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")
-        classpath("com.codingfeline.buildkonfig:buildkonfig-gradle-plugin:latest_version")
-        classpath("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
+        classpath(libs.kotlin.gradle.plugin)
+        classpath(libs.buildkonfig.gradle.plugin)
+        classpath(libs.kotlinx.serialization.json)
     }
 }
 

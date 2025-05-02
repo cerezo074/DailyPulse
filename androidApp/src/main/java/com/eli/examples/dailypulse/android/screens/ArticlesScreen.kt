@@ -1,6 +1,7 @@
 package com.eli.examples.dailypulse.android.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +20,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.pullToRefresh
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -35,11 +40,12 @@ import com.eli.examples.dailypulse.articles.presentation.ArticlesViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun ArticlesScreen(
     articlesViewModel: ArticlesViewModel = koinViewModel(),
     onAboutButtonClick: () -> Unit
 ) {
-    val articlesState = articlesViewModel.articlesState.collectAsState()
+    val articlesState = articlesViewModel.contentState.collectAsState()
 
     Column {
         AppBar(onAboutButtonClick)
@@ -48,7 +54,7 @@ fun ArticlesScreen(
         if (articlesState.value.error != null)
             ErrorMessage(articlesState.value.error!!)
         if (articlesState.value.articles.isNotEmpty())
-            ArticlesListView(articlesState.value.articles)
+            ArticlesListView(articlesViewModel)
     }
 }
 
@@ -69,13 +75,45 @@ private fun AppBar(onAboutButtonClick: () -> Unit) {
 }
 
 @Composable
-fun ArticlesListView(articles: List<Article>) {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(articles) { article ->
-            ArticleItemView(article)
+@ExperimentalMaterial3Api
+fun ArticlesListView(viewModel: ArticlesViewModel) {
+    val isRefreshing = viewModel.isRefreshing.collectAsState().value
+    val articles = viewModel.contentState.collectAsState().value.articles
+
+    PullToRefreshBox(isRefreshing = isRefreshing, onRefresh = { viewModel.onRefreshContent() }) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(articles) { article ->
+                ArticleItemView(article)
+            }
         }
+    }
+}
+
+@Composable
+@ExperimentalMaterial3Api
+fun PullToRefreshBox(
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
+    state: PullToRefreshState = rememberPullToRefreshState(),
+    contentAlignment: Alignment = Alignment.TopStart,
+    indicator: @Composable BoxScope.() -> Unit = {
+        Indicator(
+            modifier = Modifier.align(Alignment.TopCenter),
+            isRefreshing = isRefreshing,
+            state = state
+        )
+    },
+    content: @Composable BoxScope.() -> Unit
+) {
+    Box(
+        modifier.pullToRefresh(state = state, isRefreshing = isRefreshing, onRefresh = onRefresh),
+        contentAlignment = contentAlignment
+    ) {
+        content()
+        indicator()
     }
 }
 
