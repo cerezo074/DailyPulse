@@ -8,15 +8,12 @@
 
 import SwiftUI
 import shared
+import KMPObservableViewModelSwiftUI
+import KMPNativeCoroutinesAsync
 
 struct ArticlesScreen: View {
     
-    @StateObject
-    private var viewModel: ArticlesViewModelWrapper
-    
-    init() {
-        _viewModel = .init(wrappedValue: ArticlesViewModelWrapper())
-    }
+    @StateViewModel var viewModel = ArticlesInjector().viewModel
     
     var body: some View {
         VStack {
@@ -27,8 +24,6 @@ struct ArticlesScreen: View {
             } else if let errorMessage = viewModel.contentState.error {
                 Text(errorMessage)
             }
-        }.task {
-            await viewModel.startObservingChanges()
         }
         .padding(.top, 40)
         .padding(.horizontal, 20)
@@ -44,7 +39,11 @@ struct ArticlesScreen: View {
                 }
             }
         }.refreshable {
-            await viewModel.onRefreshContent()
+            do {
+                try await asyncFunction(for: viewModel.onRefreshContentAsync())
+            } catch {
+                print("Articles pull-to-refresh failed: \(error)")
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     id("com.codingfeline.buildkonfig") version "+"
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.sqlDelight)    
     alias(libs.plugins.kmpNativeCoroutines)
 }
 
@@ -27,10 +27,15 @@ kotlin {
         compilations.all {
             compileTaskProvider.configure {
                 compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_1_8)
+                    jvmTarget.set(JvmTarget.JVM_11)
                 }
             }
         }
+    }
+
+    sourceSets.all {
+        languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
+        languageSettings.optIn("kotlinx.cinterop.ExperimentalForeignApi")
     }
     
     listOf(
@@ -46,6 +51,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.kmp.nativecoroutines.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
@@ -53,10 +59,10 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
             implementation(libs.sql.coroutines.extensions)
+            api(libs.kmp.observableviewmodel.core)
         }
 
         androidMain.dependencies {
-            implementation(libs.androidx.lifecycle.viewmodel.ktx)
             implementation(libs.ktor.client.android)
             implementation(libs.sql.android.driver)
         }
@@ -93,8 +99,8 @@ android {
         minSdk = 24
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 

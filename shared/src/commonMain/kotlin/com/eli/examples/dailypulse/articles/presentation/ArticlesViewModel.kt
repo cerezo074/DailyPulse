@@ -1,36 +1,35 @@
 package com.eli.examples.dailypulse.articles.presentation
 
 import com.eli.examples.dailypulse.articles.use_cases.ListArticleUseCase
-import com.eli.examples.dailypulse.utils.BaseViewModel
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
 import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.rickclephas.kmp.observableviewmodel.ViewModel
+import com.rickclephas.kmp.observableviewmodel.MutableStateFlow
+import com.rickclephas.kmp.observableviewmodel.launch
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 class ArticlesViewModel(
     private val listArticleUseCase: ListArticleUseCase
-) : BaseViewModel() {
+) : ViewModel() {
 
-    private val _contentState: MutableStateFlow<ArticlesState> = MutableStateFlow(ArticlesState(loading = true))
-    private val _isRefreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
-
+    private val _contentState = MutableStateFlow(viewModelScope, ArticlesState(loading = true))
+    private val _isRefreshing = MutableStateFlow(viewModelScope, false)
     @NativeCoroutinesState
     val contentState: StateFlow<ArticlesState> = _contentState
-
     @NativeCoroutinesState
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     init {
-        scope.launch {
+        viewModelScope.launch {
             val fetchedArticles = listArticleUseCase.getArticles(false)
             _contentState.update{ (ArticlesState(articles = fetchedArticles, loading = false)) }
         }
     }
 
     fun onRefreshContent() {
-        scope.launch {
+        viewModelScope.launch {
             refreshContent()
         }
     }
@@ -42,6 +41,7 @@ class ArticlesViewModel(
 
     private suspend fun refreshContent() {
         _isRefreshing.update { true }
+        delay(5000)
         val fetchedArticles = listArticleUseCase.getArticles(true)
         _isRefreshing.update { false }
         _contentState.update { ArticlesState(articles = fetchedArticles) }

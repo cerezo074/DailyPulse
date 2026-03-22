@@ -5,7 +5,7 @@
 //  Created by Eli Pacheco Hoyos on 2/05/25.
 //  Copyright © 2025 orgName. All rights reserved.
 //
-import SwiftUI
+/*import SwiftUI
 import shared
 import KMPNativeCoroutinesAsync
 
@@ -55,3 +55,4 @@ class ArticlesViewModelWrapper: ObservableObject {
         }
     }
 }
+*/
