@@ -7,6 +7,7 @@
 //
 import SwiftUI
 import shared
+import KMPNativeCoroutinesAsync
 
 @MainActor
 class ArticlesViewModelWrapper: ObservableObject {
@@ -22,8 +23,8 @@ class ArticlesViewModelWrapper: ObservableObject {
     
     init(articlesViewModel: ArticlesViewModel? = nil) {
         let viewModel = articlesViewModel ?? ArticlesInjector().viewModel
-        self.contentState = viewModel.contentState.value
-        self.loaderState = viewModel.isRefreshing.value.boolValue
+        self.contentState = viewModel.contentState
+        self.loaderState = viewModel.isRefreshing
         self.articlesViewModel = viewModel
     }
     
@@ -37,22 +38,32 @@ class ArticlesViewModelWrapper: ObservableObject {
         contentStateTask?.cancel()
         loaderTask?.cancel()
         
-        contentStateTask = Task {
-            for await contentState in articlesViewModel.contentState {
-                self.contentState = contentState
+        contentStateTask = Task { @MainActor in
+            do {
+                let sequence = asyncSequence(for: articlesViewModel.contentStateFlow)
+                for try await state in sequence {
+                    self.contentState = state
+                }
+            } catch {
+                print("Articles contentState stream failed: \(error)")
             }
         }
         
-        loaderTask = Task {
-            for await loaderState in articlesViewModel.isRefreshing {
-                self.loaderState = loaderState.boolValue
+        loaderTask = Task { @MainActor in
+            do {
+                let sequence = asyncSequence(for: articlesViewModel.isRefreshingFlow)
+                for try await value in sequence {
+                    self.loaderState = value.boolValue
+                }
+            } catch {
+                print("Articles isRefreshing stream failed: \(error)")
             }
         }
     }
     
     func onRefreshContent() async {
         do {
-            try await articlesViewModel.onRefreshContentAsync()
+            try await asyncFunction(for: articlesViewModel.onRefreshContentAsync())
         } catch {
             print("Could not refresh content: \(error)")
         }

@@ -2,31 +2,30 @@ package com.eli.examples.dailypulse.articles.presentation
 
 import com.eli.examples.dailypulse.articles.use_cases.ListArticleUseCase
 import com.eli.examples.dailypulse.utils.BaseViewModel
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutines
+import com.rickclephas.kmp.nativecoroutines.NativeCoroutinesState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ArticlesViewModel(
     private val listArticleUseCase: ListArticleUseCase
 ) : BaseViewModel() {
 
-    private val internalContentState: MutableStateFlow<ArticlesState> = MutableStateFlow(ArticlesState(loading = true))
-    private val internalIsRefreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val _contentState: MutableStateFlow<ArticlesState> = MutableStateFlow(ArticlesState(loading = true))
+    private val _isRefreshing: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    val contentState: StateFlow<ArticlesState>
-        get() {
-            return internalContentState
-        }
+    @NativeCoroutinesState
+    val contentState: StateFlow<ArticlesState> = _contentState
 
-    val isRefreshing: StateFlow<Boolean>
-        get() {
-            return internalIsRefreshing
-        }
+    @NativeCoroutinesState
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     init {
         scope.launch {
             val fetchedArticles = listArticleUseCase.getArticles(false)
-            internalContentState.emit(ArticlesState(articles = fetchedArticles, loading = false))
+            _contentState.emit(ArticlesState(articles = fetchedArticles, loading = false))
         }
     }
 
@@ -36,14 +35,15 @@ class ArticlesViewModel(
         }
     }
 
+    @NativeCoroutines
     suspend fun onRefreshContentAsync() {
         refreshContent()
     }
 
     private suspend fun refreshContent() {
-        internalIsRefreshing.emit(true)
+        _isRefreshing.update { true }
         val fetchedArticles = listArticleUseCase.getArticles(true)
-        internalIsRefreshing.emit(false)
-        internalContentState.emit(ArticlesState(articles = fetchedArticles))
+        _isRefreshing.update { false }
+        _contentState.update { ArticlesState(articles = fetchedArticles) }
     }
 }
