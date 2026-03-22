@@ -16,10 +16,10 @@ buildscript {
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    id("co.touchlab.skie") version ("0.9.0")
     id("com.codingfeline.buildkonfig") version "+"
-    kotlin("plugin.serialization") version "2.1.20"
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.kmpNativeCoroutines)
 }
 
 kotlin {
