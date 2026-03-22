@@ -25,7 +25,7 @@ class ArticlesViewModel(
     init {
         scope.launch {
             val fetchedArticles = listArticleUseCase.getArticles(false)
-            _contentState.emit(ArticlesState(articles = fetchedArticles, loading = false))
+            _contentState.update{ (ArticlesState(articles = fetchedArticles, loading = false)) }
         }
     }
 

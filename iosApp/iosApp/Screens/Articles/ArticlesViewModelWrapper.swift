@@ -14,8 +14,6 @@ class ArticlesViewModelWrapper: ObservableObject {
     
     @Published
     private(set) var contentState: ArticlesState
-    @Published
-    private(set) var loaderState: Bool
     
     private var contentStateTask: Task<(), Never>?
     private var loaderTask: Task<(), Never>?
@@ -24,7 +22,6 @@ class ArticlesViewModelWrapper: ObservableObject {
     init(articlesViewModel: ArticlesViewModel? = nil) {
         let viewModel = articlesViewModel ?? ArticlesInjector().viewModel
         self.contentState = viewModel.contentState
-        self.loaderState = viewModel.isRefreshing
         self.articlesViewModel = viewModel
     }
     
@@ -46,17 +43,6 @@ class ArticlesViewModelWrapper: ObservableObject {
                 }
             } catch {
                 print("Articles contentState stream failed: \(error)")
-            }
-        }
-        
-        loaderTask = Task { @MainActor in
-            do {
-                let sequence = asyncSequence(for: articlesViewModel.isRefreshingFlow)
-                for try await value in sequence {
-                    self.loaderState = value.boolValue
-                }
-            } catch {
-                print("Articles isRefreshing stream failed: \(error)")
             }
         }
     }
